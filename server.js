@@ -35,7 +35,9 @@ app.get("/transactions", async (req, res) => {
 app.post("/mturk", async (req, res) => {
 	let json = req.body.content;
 	if(await checkDataDirectory() && await checkMTurkFile()) {
-		updateMTurkStats(json);
+		if(validJSON(json) || empty(json)) {
+			updateMTurkStats(json);
+		}
 	}
 });
 
@@ -52,7 +54,7 @@ app.post("/addTransaction", async (req, res) => {
 					if(!empty(json)) {
 						transactions = JSON.parse(json);
 					}
-					let pair = { [epoch()]: { source:source, amount:amount, date:date }};
+					let pair = { [epoch()]: { source:source, amount:amount, date:date.replaceAll(" ", "") }};
 					Object.assign(transactions, pair);
 					fs.writeFile(transactionsFile, JSON.stringify(transactions), function(error) {
 						if(error) {
@@ -83,7 +85,7 @@ app.post("/editTransaction", async (req, res) => {
 					let transactions = JSON.parse(json);
 					transactions[id].source = source;
 					transactions[id].amount = amount;
-					transactions[id].date = date;
+					transactions[id].date = date.replaceAll(" ", "");
 					fs.writeFile(transactionsFile, JSON.stringify(transactions), function(error) {
 						if(error) {
 							console.log(error);
@@ -107,7 +109,9 @@ app.post("/deleteTransaction", async (req, res) => {
 });
 
 function updateMTurkStats(json) {
-	fs.writeFile(dataDirectory + "/mturk.txt", json, { encoding:"utf-8" }, function(error) {
+	let stats = JSON.parse(json);
+	delete stats.hits;
+	fs.writeFile(dataDirectory + "/mturk.txt", JSON.stringify(stats), { encoding:"utf-8" }, function(error) {
 		if(error) {
 			console.log(error);
 		}
