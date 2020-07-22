@@ -15,19 +15,33 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	let divAddWrapper = document.getElementsByClassName("add-wrapper")[0];
 
+	getMTurkStats();
+	getTransactions();
+
 	buttonUpload.addEventListener("click", function() {
 		inputFile.click();
 	});
 	inputFile.addEventListener("change", function() {
 		let file = inputFile.files[0];
-		let reader = new FileReader();
-		reader.addEventListener("load", (e) => {
-			let result = e.target.result;
-			if(validJSON(result)) {
-				updateMTurkStats(result);
+		if(typeof file !== "undefined") {
+			if(file.name.split(".").pop().toLowerCase() === "json") {
+				let reader = new FileReader();
+				reader.addEventListener("load", (e) => {
+					let result = e.target.result;
+					if(validJSON(result) || empty(result)) {
+						updateMTurkStats(result);
+					}
+					else {
+						console.log("Invalid JSON format.");
+					}
+					inputFile.value = "";
+				});
+				reader.readAsText(file);
 			}
-		});
-		reader.readAsText(file);
+			else {
+				console.log("JSON files only.");
+			}
+		}
 	});
 
 	buttonAdd.addEventListener("click", function() {
@@ -59,10 +73,61 @@ document.addEventListener("DOMContentLoaded", function() {
 		divAddWrapper.classList.add("hidden");
 	}
 
+	function getMTurkStats() {
+		let xhr = new XMLHttpRequest();
+		xhr.addEventListener("readystatechange", function() {
+			if(xhr.readyState === XMLHttpRequest.DONE) {
+				console.log(xhr.responseText);
+				let json = xhr.responseText;
+				if(validJSON(json)) {
+					let stats = JSON.parse(json);
+					let days = stats.days;
+					let total = 0;
+					let earnings = {};
+					for(let i = 0; i < days.length; i++) {
+						let day = days[i].day;
+						let date = day.date;
+						let earned = day.earnings;
+						if(earned !== 0) {
+							total += earned;
+							let pair = { [date]:earned };
+							Object.assign(earnings, pair);
+						}
+					}
+
+				}
+			}
+		});
+		xhr.open("GET", "/mturk", true);
+		xhr.send();
+	}
 	function updateMTurkStats(json) {
-		
+		let xhr = new XMLHttpRequest();
+		xhr.addEventListener("readystatechange", function() {
+			if(xhr.readyState === XMLHttpRequest.DONE) {
+				console.log(xhr.responseText);
+			}
+		});
+		xhr.open("POST", "/mturk", true);
+		xhr.setRequestHeader("Content-Type", "application/json");
+		xhr.send(JSON.stringify({ content:json }));
 	}
 
+	function getTransactions() {
+		let xhr = new XMLHttpRequest();
+		xhr.addEventListener("readystatechange", function() {
+			if(xhr.readyState === XMLHttpRequest.DONE) {
+				console.log(xhr.responseText);
+				let json = xhr.responseText;
+				if(validJSON(json)) {
+					let transactions = JSON.parse(json);
+
+				}
+			}
+		});
+		xhr.open("GET", "/transactions", true);
+		xhr.send();
+	}
 	function addTransaction(source, amount) {
 
 	}
@@ -89,9 +154,7 @@ function validJSON(json) {
 			return object;
 		}
 	}
-	catch(e) {
-		console.log(e);
-	}
+	catch(e) { }
 	return false;
 }
 
