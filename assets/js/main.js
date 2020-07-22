@@ -3,7 +3,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	let divOverlay = document.getElementsByClassName("overlay")[0];
 
+	let buttonUpload = document.getElementsByClassName("footer-button upload")[0];
 	let buttonAdd = document.getElementsByClassName("footer-button add")[0];
+
+	let inputFile = document.getElementsByClassName("file-input")[0];
 
 	let inputSource = document.getElementsByClassName("add-input source")[0];
 	let inputAmount = document.getElementsByClassName("add-input amount")[0];
@@ -11,6 +14,21 @@ document.addEventListener("DOMContentLoaded", function() {
 	let buttonConfirmAdd = document.getElementsByClassName("add action-button confirm")[0];
 
 	let divAddWrapper = document.getElementsByClassName("add-wrapper")[0];
+
+	buttonUpload.addEventListener("click", function() {
+		inputFile.click();
+	});
+	inputFile.addEventListener("change", function() {
+		let file = inputFile.files[0];
+		let reader = new FileReader();
+		reader.addEventListener("load", (e) => {
+			let result = e.target.result;
+			if(validJSON(result)) {
+				updateMTurkStats(result);
+			}
+		});
+		reader.readAsText(file);
+	});
 
 	buttonAdd.addEventListener("click", function() {
 		if(divAddWrapper.classList.contains("hidden")) {
@@ -41,6 +59,10 @@ document.addEventListener("DOMContentLoaded", function() {
 		divAddWrapper.classList.add("hidden");
 	}
 
+	function updateMTurkStats(json) {
+		
+	}
+
 	function addTransaction(source, amount) {
 
 	}
@@ -58,6 +80,19 @@ function empty(string) {
 		return false;
 	}
 	return true;
+}
+
+function validJSON(json) {
+	try {
+		let object = JSON.parse(json);
+		if(object && typeof object === "object") {
+			return object;
+		}
+	}
+	catch(e) {
+		console.log(e);
+	}
+	return false;
 }
 
 // Detect whether or not the user is on a mobile browser.

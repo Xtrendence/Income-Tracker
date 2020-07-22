@@ -16,3 +16,16 @@ app.use(body_parser.json());
 app.get("/", (req, res) => {
 	res.render("index");
 });
+
+function validJSON(json) {
+	try {
+		let object = JSON.parse(json);
+		if(object && typeof object === "object") {
+			return object;
+		}
+	}
+	catch(e) {
+		console.log(e);
+	}
+	return false;
+}
