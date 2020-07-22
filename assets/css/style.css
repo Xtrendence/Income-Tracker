@@ -96,7 +96,7 @@ button, input {
 
 .income-transaction {
 	display:block;
-	background:rgb(60,60,60);
+	background:rgb(50,50,50);
 	margin:20px auto 0 auto;
 	padding:10px 20px 10px 20px;
 	height:40px;
@@ -182,9 +182,11 @@ button, input {
 .stats-wrapper .section-title {
 	font-size:18px;
 	font-weight:bold;
+	display:block;
+	margin-bottom:10px;
 }
 .stats-wrapper .stats-total {
-
+	font-size:16px;
 }
 .stats-wrapper .stats-months {
 
@@ -204,10 +206,10 @@ button, input {
 	background:rgb(40,40,40);
 	padding:10px;
 	width:260px;
-	height:140px;
+	height:200px;
 	position:absolute;
 	z-index:3;
-	top:calc(50% - (140px + 20px) / 2);
+	top:calc(50% - (200px + 20px) / 2);
 	left:calc(50% - (260px + 20px) / 2);
 	border-radius:10px;
 }

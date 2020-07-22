@@ -40,8 +40,34 @@ app.post("/mturk", async (req, res) => {
 });
 
 app.post("/addTransaction", async (req, res) => {
-	if(await checkDataDirectory() && await checkTransactionsFile()) {
-
+	let source = req.body.source;
+	let amount = req.body.amount;
+	let date = req.body.date;
+	try {
+		if(!empty(source) && !empty(amount) && parseFloat(amount)) {
+			if(await checkDataDirectory() && await checkTransactionsFile()) {
+				let json = await getFileContent(transactionsFile);
+				if(validJSON(json) || empty(json)) {
+					let transactions = {};
+					if(!empty(json)) {
+						transactions = JSON.parse(json);
+					}
+					let pair = { [epoch()]: { source:source, amount:amount, date:date }};
+					Object.assign(transactions, pair);
+					fs.writeFile(transactionsFile, JSON.stringify(transactions), function(error) {
+						if(error) {
+							console.log(error);
+						}
+						else {
+							res.send("done");
+						}
+					});
+				}
+			}
+		}
+	}
+	catch(e) {
+		console.log(e);
 	}
 });
 app.post("/editTransaction", async (req, res) => {
@@ -64,7 +90,7 @@ function updateMTurkStats(json) {
 }
 
 async function getFileContent(file) {
-	let result = false;
+	let result = "";
 	if(fs.existsSync(file)) {
 		return fs.readFileSync(file,  function(error, content) {
 			if(error) {
@@ -118,6 +144,19 @@ async function checkTransactionsFile() {
 	return exists;
 }
 
+function epoch() {
+	let date = new Date();
+	let time = Math.round(date.getTime() / 1000);
+	return time;
+}
+
+function empty(string) {
+	if(string !== null && typeof string !== "undefined" && string.toString().trim() !== "" && JSON.stringify(string) !== "" && JSON.stringify(string) !== "{}") {
+		return false;
+	}
+	return true;
+}
+
 function validJSON(json) {
 	try {
 		let object = JSON.parse(json);
@@ -125,8 +164,6 @@ function validJSON(json) {
 			return object;
 		}
 	}
-	catch(e) {
-		console.log(e);
-	}
+	catch(e) { }
 	return false;
 }

@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	let divOverlay = document.getElementsByClassName("overlay")[0];
 
+	let divIncomeList = document.getElementsByClassName("income-list")[0];
+
 	let buttonUpload = document.getElementsByClassName("footer-button upload")[0];
 	let buttonAdd = document.getElementsByClassName("footer-button add")[0];
 
@@ -10,12 +12,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	let inputSource = document.getElementsByClassName("add-input source")[0];
 	let inputAmount = document.getElementsByClassName("add-input amount")[0];
+	let inputDate = document.getElementsByClassName("add-input date")[0];
 	let buttonCancelAdd = document.getElementsByClassName("add action-button cancel")[0];
 	let buttonConfirmAdd = document.getElementsByClassName("add action-button confirm")[0];
 
 	let divAddWrapper = document.getElementsByClassName("add-wrapper")[0];
 
-	getMTurkStats();
+	let spanTotalEarnings = document.getElementsByClassName("stats-total")[0];
+
 	getTransactions();
 
 	buttonUpload.addEventListener("click", function() {
@@ -59,9 +63,16 @@ document.addEventListener("DOMContentLoaded", function() {
 		hideAdd();
 		let source = inputSource.value;
 		let amount = inputAmount.value;
+		let date = inputDate.value;
 		inputSource.value = "";
 		inputAmount.value = "";
-		addTransaction(source, amount);
+		inputDate.value = "";
+		addTransaction(source, amount, date);
+	});
+	divAddWrapper.addEventListener("keydown", function(e) {
+		if(e.key.toLowerCase() === "enter") {
+			buttonConfirmAdd.click();
+		}
 	});
 
 	function showAdd() {
@@ -77,7 +88,6 @@ document.addEventListener("DOMContentLoaded", function() {
 		let xhr = new XMLHttpRequest();
 		xhr.addEventListener("readystatechange", function() {
 			if(xhr.readyState === XMLHttpRequest.DONE) {
-				console.log(xhr.responseText);
 				let json = xhr.responseText;
 				if(validJSON(json)) {
 					let stats = JSON.parse(json);
@@ -94,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function() {
 							Object.assign(earnings, pair);
 						}
 					}
-
+					calculateMTurk(total);
 				}
 			}
 		});
@@ -105,31 +115,101 @@ document.addEventListener("DOMContentLoaded", function() {
 		let xhr = new XMLHttpRequest();
 		xhr.addEventListener("readystatechange", function() {
 			if(xhr.readyState === XMLHttpRequest.DONE) {
-				console.log(xhr.responseText);
+				getTransactions();
 			}
 		});
 		xhr.open("POST", "/mturk", true);
 		xhr.setRequestHeader("Content-Type", "application/json");
 		xhr.send(JSON.stringify({ content:json }));
 	}
+	function calculateMTurk(total) {
+		let xhr = new XMLHttpRequest();
+		xhr.addEventListener("readystatechange", function() {
+			if(xhr.readyState === XMLHttpRequest.DONE) {
+				if(validJSON(xhr.responseText)) {
+					let result = JSON.parse(xhr.responseText);
+					let gbp = result.rates.GBP;
+					total = total * gbp;
+					let current = 0;
+					if(!empty(spanTotalEarnings.textContent)) {
+						current = parseFloat(spanTotalEarnings.textContent.replace("£", ""));
+					}
+					let updated = current + total;
+					spanTotalEarnings.textContent = "£" + updated.toFixed(2);
+				}
+			}
+		});
+		xhr.open("GET", "https://api.exchangeratesapi.io/latest?base=USD", true);
+		xhr.send();
+	}
 
 	function getTransactions() {
 		let xhr = new XMLHttpRequest();
 		xhr.addEventListener("readystatechange", function() {
 			if(xhr.readyState === XMLHttpRequest.DONE) {
-				console.log(xhr.responseText);
+				spanTotalEarnings.textContent = "£0";
 				let json = xhr.responseText;
 				if(validJSON(json)) {
+					divIncomeList.innerHTML = "";
 					let transactions = JSON.parse(json);
-
+					let ids = Object.keys(transactions).reverse();
+					let total = 0;
+					for(let i = 0; i < ids.length; i++) {
+						let div = document.createElement("div");
+						div.classList.add("income-transaction");
+						div.id = ids[i];
+						div.innerHTML = '<div class="income-transaction-details"><span class="income-source">' + transactions[ids[i]].source + '</span><span class="income-amount">' + transactions[ids[i]].amount + '</span><span class="income-date">' + transactions[ids[i]].date + '</span></div><div class="income-transaction-actions hidden"><button class="income action-button back">Back</button><button class="income action-button delete">Delete</button><button class="income action-button edit">Edit</button></div>';
+						divIncomeList.appendChild(div);
+						total += parseFloat(transactions[ids[i]].amount);
+					}
+					calculateTransactions(total);
 				}
+				getMTurkStats();
 			}
 		});
 		xhr.open("GET", "/transactions", true);
 		xhr.send();
 	}
-	function addTransaction(source, amount) {
-
+	function addTransaction(source, amount, date) {
+		let xhr = new XMLHttpRequest();
+		xhr.addEventListener("readystatechange", function() {
+			if(xhr.readyState === XMLHttpRequest.DONE) {
+				getTransactions();
+			}
+		});
+		xhr.open("POST", "/addTransaction", true);
+		xhr.setRequestHeader("Content-Type", "application/json");
+		xhr.send(JSON.stringify({ source:source, amount:amount, date:date }));
+	}
+	function editTransaction(id, source, amount, date) {
+		let xhr = new XMLHttpRequest();
+		xhr.addEventListener("readystatechange", function() {
+			if(xhr.readyState === XMLHttpRequest.DONE) {
+				getTransactions();
+			}
+		});
+		xhr.open("POST", "/editTransaction", true);
+		xhr.setRequestHeader("Content-Type", "application/json");
+		xhr.send(JSON.stringify({ id:id, source:source, amount:amount, date:date }));
+	}
+	function deleteTransaction(id) {
+		let xhr = new XMLHttpRequest();
+		xhr.addEventListener("readystatechange", function() {
+			if(xhr.readyState === XMLHttpRequest.DONE) {
+				getTransactions();
+			}
+		});
+		xhr.open("POST", "/mturk", true);
+		xhr.setRequestHeader("Content-Type", "application/json");
+		xhr.send(JSON.stringify({ id:id }));
+	}
+	function calculateTransactions(total) {
+		let current = 0;
+		if(!empty(spanTotalEarnings.textContent)) {
+			current = parseFloat(spanTotalEarnings.textContent.replace("£", ""));
+		}
+		let updated = current + total;
+		spanTotalEarnings.textContent = "£" + updated.toFixed(2);
 	}
 
 	if(detectMobile()) {
@@ -141,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function empty(string) {
-	if(string !== null && typeof string !== "undefined" && string.trim() !== "" && JSON.stringify(string) !== "" && JSON.stringify(string) !== "{}") {
+	if(string !== null && typeof string !== "undefined" && string.toString().trim() !== "" && JSON.stringify(string) !== "" && JSON.stringify(string) !== "{}") {
 		return false;
 	}
 	return true;
