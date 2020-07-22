@@ -18,7 +18,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	let divAddWrapper = document.getElementsByClassName("add-wrapper")[0];
 
-	let spanTotalEarnings = document.getElementsByClassName("stats-total")[0];
+	let spanTotalEarningsMTurk = document.getElementsByClassName("stats-total mturk")[0];
+	let spanTotalEarningsOther = document.getElementsByClassName("stats-total other")[0];
+	let spanTotalEarningsAdded = document.getElementsByClassName("stats-total added")[0];
 
 	getTransactions();
 
@@ -130,12 +132,8 @@ document.addEventListener("DOMContentLoaded", function() {
 					let result = JSON.parse(xhr.responseText);
 					let gbp = result.rates.GBP;
 					total = total * gbp;
-					let current = 0;
-					if(!empty(spanTotalEarnings.textContent)) {
-						current = parseFloat(spanTotalEarnings.textContent.replace("£", ""));
-					}
-					let updated = current + total;
-					spanTotalEarnings.textContent = "£" + updated.toFixed(2);
+					spanTotalEarningsMTurk.textContent = "MTurk: £" + total.toFixed(2);
+					calculateTotal();
 				}
 			}
 		});
@@ -147,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		let xhr = new XMLHttpRequest();
 		xhr.addEventListener("readystatechange", function() {
 			if(xhr.readyState === XMLHttpRequest.DONE) {
-				spanTotalEarnings.textContent = "£0";
+				spanTotalEarningsOther.textContent = "Other: £0";
 				let json = xhr.responseText;
 				if(validJSON(json)) {
 					divIncomeList.innerHTML = "";
@@ -205,11 +203,17 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 	function calculateTransactions(total) {
 		let current = 0;
-		if(!empty(spanTotalEarnings.textContent)) {
-			current = parseFloat(spanTotalEarnings.textContent.replace("£", ""));
+		if(!empty(spanTotalEarningsOther.textContent.replace("Other: £", ""))) {
+			current = parseFloat(spanTotalEarningsOther.textContent.replace("Other: £", ""));
 		}
 		let updated = current + total;
-		spanTotalEarnings.textContent = "£" + updated.toFixed(2);
+		spanTotalEarningsOther.textContent = "Other: £" + updated.toFixed(2);
+		calculateTotal();
+	}
+
+	function calculateTotal() {
+		let added = parseFloat(spanTotalEarningsMTurk.textContent.replace("MTurk: £", "")) + parseFloat(spanTotalEarningsOther.textContent.replace("Other: £", ""));
+		spanTotalEarningsAdded.textContent = "Total: £" + added;
 	}
 
 	if(detectMobile()) {
