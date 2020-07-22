@@ -7,7 +7,7 @@ html {
 	font-family:var(--font-family);
 }
 body {
-	background:rgb(40,40,40);
+	background:rgb(20,20,20);
 	color:rgb(255,255,255);
 	margin:0;
 	padding:0;
@@ -48,3 +48,100 @@ button, input {
 	background:rgb(210,210,210);
 }
 
+.income-wrapper {
+	position:absolute;
+	top:0;
+	left:0;
+	width:50%;
+	height:100%;
+	background:rgb(40,40,40);
+}
+.income-list {
+	background:rgb(40,40,40);
+	width:100%;
+	height:calc(100% - 80px);
+	display:block;
+}
+.income-wrapper .footer {
+	background:rgb(60,60,60);
+	height:80px;
+	width:100%;
+	display:block;
+	text-align:right;
+	font-size:0;
+}
+.income-wrapper .footer-button {
+	background:rgb(40,40,40);
+	color:rgb(255,255,255);
+	font-weight:bold;
+	font-size:16px;
+	height:40px;
+	border-radius:5px;
+	cursor:pointer;
+	padding:0 10px 0 10px;
+	display:inline-block;
+	margin:20px 20px 0 0;
+}
+#desktop .income-wrapper .footer-button:hover {
+	background:rgb(0,125,255);
+}
+
+.stats-wrapper {
+	position:absolute;
+	top:0;
+	right:0;
+	width:50%;
+	height:100%;
+	background:rgb(20,20,20);
+}
+.stats-wrapper .chart-wrapper {
+
+}
+.stats-wrapper .stats-section {
+	display:block;
+	background:rgb(40,40,40);
+	margin:20px auto 0 auto;
+	padding:10px;
+	width:calc(100% - 40px - 20px);
+	border-radius:10px;
+}
+.stats-wrapper .section-title {
+	font-size:18px;
+	font-weight:bold;
+}
+.stats-wrapper .stats-total {
+
+}
+.stats-wrapper .stats-months {
+
+}
+
+.overlay {
+
+}
+
+.add-wrapper {
+
+}
+.add-wrapper .source-wrapper {
+
+}
+.add-wrapper .source-list {
+
+}
+.add-wrapper .edit-icon {
+	width:32px;
+	height:32px;
+}
+.add-wrapper .input-wrapper {
+
+}
+.add-input {
+
+}
+.add-wrapper .action-wrapper {
+
+}
+.add-wrapper .action-button {
+
+}
