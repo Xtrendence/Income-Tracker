@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	let divAddWrapper = document.getElementsByClassName("add-wrapper")[0];
 
+	let divChartWrapper = document.getElementsByClassName("chart-wrapper")[0];
+
 	let spanTotalEarningsMTurk = document.getElementsByClassName("stats-total mturk")[0];
 	let spanTotalEarningsOther = document.getElementsByClassName("stats-total other")[0];
 	let spanTotalEarningsAdded = document.getElementsByClassName("stats-total added")[0];
@@ -106,6 +108,7 @@ document.addEventListener("DOMContentLoaded", function() {
 							Object.assign(earnings, pair);
 						}
 					}
+					spanTotalEarningsMTurk.setAttribute("data-mturk", JSON.stringify(earnings));
 					calculateMTurk(total);
 				}
 			}
@@ -210,10 +213,105 @@ document.addEventListener("DOMContentLoaded", function() {
 		spanTotalEarningsOther.textContent = "Other: £" + updated.toFixed(2);
 		calculateTotal();
 	}
+	function parseTransactionList() {
+		let transactions = {};
+		let divTransactions = document.getElementsByClassName("income-transaction");
+		for(let i = 0; i < divTransactions.length; i++) {
+			let divTransaction = divTransactions[i];
+			let amount = divTransaction.getElementsByClassName("income-amount")[0].textContent.replace("£", "");
+			let date = divTransaction.getElementsByClassName("income-date")[0].textContent;
+			Object.assign(transactions, { [divTransaction.id]: { amount:parseFloat(amount), date:date }});
+		}
+		return transactions;
+	}
+
+	function parseEarnings() {
+		divChartWrapper.innerHTML = "";
+
+		let transactions = parseTransactionList();
+
+		let currentDate = new Date();
+		let currentMonth = "0" + (currentDate.getMonth() + 1).toString().slice(-2);
+
+		let dates = {};
+
+		let dataMTurk = spanTotalEarningsMTurk.getAttribute("data-mturk");
+		if(!empty(dataMTurk)) {
+			let statsMTurk = JSON.parse(spanTotalEarningsMTurk.getAttribute("data-mturk"));
+			let times = Object.keys(statsMTurk);
+
+			for(let i = 0; i < times.length; i++) {
+				let time = times[i];
+				let date = new Date(time);
+				let day = ("0" + date.getDate()).slice(-2);
+				let month = ("0" + parseInt(date.getMonth() + 1)).toString().slice(-2);
+				if(month === currentMonth) {
+					if(day in dates) {
+						dates[day] = parseFloat(dates[day]) + parseFloat(statsMTurk[time]);
+					}
+					else {
+						Object.assign(dates, { [day]:parseFloat(statsMTurk[time]) });
+					}
+				}
+			}
+
+			let ids = Object.keys(transactions);
+			for(let i = 0; i < ids.length; i++) {
+				let transaction = transactions[ids[i]];
+				let transactionDay = transaction.date.split("/")[0];
+				let transactionMonth = transaction.date.split("/")[1];
+				if(transactionMonth === currentMonth) {
+					if(transactionDay in dates) {
+						dates[transactionDay] = parseFloat(dates[transactionDay]) + parseFloat(transaction.amount);
+					}
+					else {
+						Object.assign(dates, { [transactionDay]:parseFloat(transaction.amount) });
+					}
+				}
+			}
+
+			let days = Object.keys(dates).sort(function(a, b) {
+				return a.localeCompare(b);
+			});;
+			let earnings = [];
+
+			for(let i = 0; i < days.length; i++) {
+				earnings.push(parseFloat(dates[days[i]]).toFixed(2));
+			}
+
+			generateChart(days, earnings);
+		}
+	}
+
+	function generateMonthlyEarnings() {
+
+	}
+
+	function generateChart(days, earnings) {
+		let canvas = document.createElement("canvas");
+		canvas.classList.add("chart");
+		let contextChart = canvas.getContext("2d");
+		let chart = new Chart(contextChart, {
+			type:"line",
+			data: {
+				labels:days,
+				datasets:[{
+					label:"Earnings (£)",
+					backgroundColor:"rgb(86,204,242)",
+					borderColor:"rgb(50, 130, 240)",
+					data:earnings
+				}]
+			}
+		});
+		divChartWrapper.appendChild(canvas);
+	}
 
 	function calculateTotal() {
 		let added = parseFloat(spanTotalEarningsMTurk.textContent.replace("MTurk: £", "")) + parseFloat(spanTotalEarningsOther.textContent.replace("Other: £", ""));
-		spanTotalEarningsAdded.textContent = "Total: £" + added;
+		if(added.toString().toLowerCase() !== "nan") {
+			spanTotalEarningsAdded.textContent = "Total: £" + added;
+		}
+		parseEarnings();
 	}
 
 	if(detectMobile()) {
@@ -229,6 +327,11 @@ function empty(string) {
 		return false;
 	}
 	return true;
+}
+
+// Replace all occurrences in a string.
+String.prototype.replaceAll = function(str1, str2, ignore) {
+	return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
 }
 
 function validJSON(json) {
