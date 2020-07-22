@@ -1,3 +1,5 @@
+// TODO: Edit transaction, delete transaction, sort transactions by date, monthly earnings, mobile site, MTurk transfer adjustment.
+
 document.addEventListener("DOMContentLoaded", function() {
 	let body = document.getElementsByTagName("body")[0];
 
@@ -54,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	buttonAdd.addEventListener("click", function() {
 		if(divAddWrapper.classList.contains("hidden")) {
-			showAdd();
+			showAdd("add");
 		}
 		else {
 			hideAdd();
@@ -65,27 +67,42 @@ document.addEventListener("DOMContentLoaded", function() {
 	});
 	buttonConfirmAdd.addEventListener("click", function() {
 		hideAdd();
+		let action = divAddWrapper.getAttribute("data-action");
+		let id = divAddWrapper.getAttribute("data-id");
 		let source = inputSource.value;
 		let amount = inputAmount.value;
 		let date = inputDate.value;
 		inputSource.value = "";
 		inputAmount.value = "";
 		inputDate.value = "";
-		addTransaction(source, amount, date);
+		switch(action) {
+			case "add":
+				addTransaction(source, amount, date);
+				break;
+			case "edit":
+				editTransaction(id, source, amount, date);
+				break;
+		}
 	});
 	divAddWrapper.addEventListener("keydown", function(e) {
 		if(e.key.toLowerCase() === "enter") {
 			buttonConfirmAdd.click();
 		}
 	});
+	divOverlay.addEventListener("click", function() {
+		hideAdd();
+	});
 
-	function showAdd() {
+	function showAdd(action) {
 		divOverlay.classList.remove("hidden");
 		divAddWrapper.classList.remove("hidden");
+		divAddWrapper.setAttribute("data-action", action);
 	}
 	function hideAdd() {
 		divOverlay.classList.add("hidden");
 		divAddWrapper.classList.add("hidden");
+		divAddWrapper.setAttribute("data-action", "add");
+		divAddWrapper.setAttribute("data-id", "");
 	}
 
 	function getMTurkStats() {
@@ -160,6 +177,22 @@ document.addEventListener("DOMContentLoaded", function() {
 						div.classList.add("income-transaction");
 						div.id = ids[i];
 						div.innerHTML = '<div class="income-transaction-details"><span class="income-source">' + transactions[ids[i]].source + '</span><span class="income-amount">' + transactions[ids[i]].amount + '</span><span class="income-date">' + transactions[ids[i]].date + '</span></div><div class="income-transaction-actions hidden"><button class="income action-button back">Back</button><button class="income action-button delete">Delete</button><button class="income action-button edit">Edit</button></div>';
+
+						div.addEventListener("click", function() {
+							if(div.getElementsByClassName("income-transaction-actions")[0].classList.contains("hidden")) {
+								div.getElementsByClassName("income-transaction-details")[0].classList.add("hidden");
+								div.getElementsByClassName("income-transaction-actions")[0].classList.remove("hidden");
+							}
+							else {
+								div.getElementsByClassName("income-transaction-details")[0].classList.remove("hidden");
+								div.getElementsByClassName("income-transaction-actions")[0].classList.add("hidden");
+							}
+						});
+						div.getElementsByClassName("income action-button edit")[0].addEventListener("click", function() {
+							showAdd("edit");
+							divAddWrapper.setAttribute("data-id", ids[i]);
+						});
+
 						divIncomeList.appendChild(div);
 						total += parseFloat(transactions[ids[i]].amount);
 					}
