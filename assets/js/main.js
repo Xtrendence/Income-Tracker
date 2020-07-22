@@ -1,6 +1,50 @@
 document.addEventListener("DOMContentLoaded", function() {
 	let body = document.getElementsByTagName("body")[0];
 
+	let divOverlay = document.getElementsByClassName("overlay")[0];
+
+	let buttonAdd = document.getElementsByClassName("footer-button add")[0];
+
+	let inputSource = document.getElementsByClassName("add-input source")[0];
+	let inputAmount = document.getElementsByClassName("add-input amount")[0];
+	let buttonCancelAdd = document.getElementsByClassName("add action-button cancel")[0];
+	let buttonConfirmAdd = document.getElementsByClassName("add action-button confirm")[0];
+
+	let divAddWrapper = document.getElementsByClassName("add-wrapper")[0];
+
+	buttonAdd.addEventListener("click", function() {
+		if(divAddWrapper.classList.contains("hidden")) {
+			showAdd();
+		}
+		else {
+			hideAdd();
+		}
+	});
+	buttonCancelAdd.addEventListener("click", function() {
+		hideAdd();
+	});
+	buttonConfirmAdd.addEventListener("click", function() {
+		hideAdd();
+		let source = inputSource.value;
+		let amount = inputAmount.value;
+		inputSource.value = "";
+		inputAmount.value = "";
+		addTransaction(source, amount);
+	});
+
+	function showAdd() {
+		divOverlay.classList.remove("hidden");
+		divAddWrapper.classList.remove("hidden");
+	}
+	function hideAdd() {
+		divOverlay.classList.add("hidden");
+		divAddWrapper.classList.add("hidden");
+	}
+
+	function addTransaction(source, amount) {
+
+	}
+
 	if(detectMobile()) {
 		body.id = "mobile";
 	}
