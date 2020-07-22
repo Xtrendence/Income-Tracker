@@ -52,7 +52,7 @@ button, input {
 	position:absolute;
 	top:0;
 	left:0;
-	width:50%;
+	width:480px;
 	height:100%;
 	background:rgb(40,40,40);
 }
@@ -164,7 +164,7 @@ button, input {
 	position:absolute;
 	top:0;
 	right:0;
-	width:50%;
+	width:calc(100% - 480px);
 	height:100%;
 	background:rgb(20,20,20);
 }
