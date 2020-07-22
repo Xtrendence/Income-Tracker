@@ -44,7 +44,7 @@ app.post("/addTransaction", async (req, res) => {
 	let amount = req.body.amount;
 	let date = req.body.date;
 	try {
-		if(!empty(source) && !empty(amount) && parseFloat(amount)) {
+		if(!empty(source) && !empty(amount) && !empty(date) && parseFloat(amount)) {
 			if(await checkDataDirectory() && await checkTransactionsFile()) {
 				let json = await getFileContent(transactionsFile);
 				if(validJSON(json) || empty(json)) {
@@ -71,8 +71,33 @@ app.post("/addTransaction", async (req, res) => {
 	}
 });
 app.post("/editTransaction", async (req, res) => {
-	if(await checkDataDirectory() && await checkTransactionsFile()) {
-
+	let id = req.body.id;
+	let source = req.body.source;
+	let amount = req.body.amount;
+	let date = req.body.date;
+	try {
+		if(!empty(source) && !empty(amount) && !empty(date) && parseFloat(amount)) {
+			if(await checkDataDirectory() && await checkTransactionsFile()) {
+				let json = await getFileContent(transactionsFile);
+				if(validJSON(json)) {
+					let transactions = JSON.parse(json);
+					transactions[id].source = source;
+					transactions[id].amount = amount;
+					transactions[id].date = date;
+					fs.writeFile(transactionsFile, JSON.stringify(transactions), function(error) {
+						if(error) {
+							console.log(error);
+						}
+						else {
+							res.send("done");
+						}
+					});
+				}
+			}
+		}
+	}
+	catch(e) {
+		console.log(e);
 	}
 });
 app.post("/deleteTransaction", async (req, res) => {

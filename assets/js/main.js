@@ -1,4 +1,4 @@
-// TODO: Edit transaction, delete transaction, sort transactions by date, monthly earnings, mobile site, MTurk transfer adjustment.
+// TODO: Delete transaction, sort transactions by date, monthly earnings, mobile site, MTurk transfer adjustment.
 
 document.addEventListener("DOMContentLoaded", function() {
 	let body = document.getElementsByTagName("body")[0];
@@ -66,7 +66,6 @@ document.addEventListener("DOMContentLoaded", function() {
 		hideAdd();
 	});
 	buttonConfirmAdd.addEventListener("click", function() {
-		hideAdd();
 		let action = divAddWrapper.getAttribute("data-action");
 		let id = divAddWrapper.getAttribute("data-id");
 		let source = inputSource.value;
@@ -83,6 +82,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				editTransaction(id, source, amount, date);
 				break;
 		}
+		hideAdd();
 	});
 	divAddWrapper.addEventListener("keydown", function(e) {
 		if(e.key.toLowerCase() === "enter") {
@@ -93,10 +93,22 @@ document.addEventListener("DOMContentLoaded", function() {
 		hideAdd();
 	});
 
-	function showAdd(action) {
+	function showAdd(action, args) {
 		divOverlay.classList.remove("hidden");
 		divAddWrapper.classList.remove("hidden");
 		divAddWrapper.setAttribute("data-action", action);
+		switch(action) {
+			case "add":
+				inputSource.value = "";
+				inputAmount.value = "";
+				inputDate.value = "";
+				break;
+			case "edit":
+				inputSource.value = args.source;
+				inputAmount.value = args.amount;
+				inputDate.value = args.date;
+				break;
+		}
 	}
 	function hideAdd() {
 		divOverlay.classList.add("hidden");
@@ -176,7 +188,7 @@ document.addEventListener("DOMContentLoaded", function() {
 						let div = document.createElement("div");
 						div.classList.add("income-transaction");
 						div.id = ids[i];
-						div.innerHTML = '<div class="income-transaction-details"><span class="income-source">' + transactions[ids[i]].source + '</span><span class="income-amount">' + transactions[ids[i]].amount + '</span><span class="income-date">' + transactions[ids[i]].date + '</span></div><div class="income-transaction-actions hidden"><button class="income action-button back">Back</button><button class="income action-button delete">Delete</button><button class="income action-button edit">Edit</button></div>';
+						div.innerHTML = '<div class="income-transaction-details"><span class="income-source">' + transactions[ids[i]].source + '</span><span class="income-amount">' + transactions[ids[i]].amount + '</span><span class="income-date">' + transactions[ids[i]].date + '</span></div><div class="income-transaction-actions hidden"><button class="income action-button back">Back</button><button class="income action-button edit">Edit</button><button class="income action-button delete">Delete</button></div>';
 
 						div.addEventListener("click", function() {
 							if(div.getElementsByClassName("income-transaction-actions")[0].classList.contains("hidden")) {
@@ -189,7 +201,7 @@ document.addEventListener("DOMContentLoaded", function() {
 							}
 						});
 						div.getElementsByClassName("income action-button edit")[0].addEventListener("click", function() {
-							showAdd("edit");
+							showAdd("edit", { source:transactions[ids[i]].source, amount:transactions[ids[i]].amount, date:transactions[ids[i]].date });
 							divAddWrapper.setAttribute("data-id", ids[i]);
 						});
 
@@ -233,7 +245,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				getTransactions();
 			}
 		});
-		xhr.open("POST", "/mturk", true);
+		xhr.open("POST", "/deleteTransaction", true);
 		xhr.setRequestHeader("Content-Type", "application/json");
 		xhr.send(JSON.stringify({ id:id }));
 	}
