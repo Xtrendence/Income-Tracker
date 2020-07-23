@@ -1,4 +1,5 @@
-const port = 80;
+const port = 6969;
+const scriptPath = process.cwd() + "\\server.js";
 
 const express = require("express");
 const app = express();
@@ -7,6 +8,8 @@ const server = app.listen(port);
 const fs = require("fs");
 const path = require("path");
 const body_parser = require("body-parser");
+
+const Service = require("node-windows").Service;
 
 const dataDirectory = path.join(__dirname, "./data/");
 const mturkFile = dataDirectory + "/mturk.txt";
@@ -19,6 +22,21 @@ app.use(body_parser.json({ limit:"100mb" }));
 
 app.get("/", (req, res) => {
 	res.render("index");
+});
+
+app.get("/install", async(req, res) => {
+	let svc = new Service({
+		name:"Income-Tracker",
+		description:"Income Tracker",
+		script:scriptPath
+	});
+
+	svc.on("install", function() {
+		res.send("Service Installed");
+		svc.start();
+	});
+
+	svc.install();
 });
 
 app.get("/mturk", async (req, res) => {
