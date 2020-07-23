@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	let divMonths = document.getElementsByClassName("stats-months")[0];
 
 	let divChartWrapper = document.getElementsByClassName("chart-wrapper")[0];
+	let spanAverage = document.getElementsByClassName("stats-text average")[0];
 
 	let spanTotalEarningsMTurk = document.getElementsByClassName("stats-total mturk")[0];
 	let spanTotalEarningsOther = document.getElementsByClassName("stats-total other")[0];
@@ -364,6 +365,8 @@ document.addEventListener("DOMContentLoaded", function() {
 		let currentMonth = ("0" + (currentDate.getMonth() + 1)).toString().slice(-2);
 		let currentYear = currentDate.getFullYear();
 
+		let monthlyTotal = 0;
+
 		let dates = {};
 		let months = {};
 
@@ -388,6 +391,7 @@ document.addEventListener("DOMContentLoaded", function() {
 					else {
 						Object.assign(dates, { [day]:parseFloat(statsMTurk[time]) });
 					}
+					monthlyTotal += parseFloat(statsMTurk[time]);
 				}
 
 				if(monthYear in months) {
@@ -412,6 +416,7 @@ document.addEventListener("DOMContentLoaded", function() {
 					else {
 						Object.assign(dates, { [day]:parseFloat(transaction.amount) });
 					}
+					monthlyTotal += parseFloat(transaction.amount);
 				}
 
 				if(monthYear in months) {
@@ -430,6 +435,8 @@ document.addEventListener("DOMContentLoaded", function() {
 			for(let i = 0; i < days.length; i++) {
 				earnings.push(parseFloat(dates[days[i]]).toFixed(2));
 			}
+
+			spanAverage.textContent = "Daily Average: £" + (monthlyTotal / days.length).toFixed(2);
 
 			generateChart(days, earnings);
 			generateMonthlyEarnings(months);
@@ -464,6 +471,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		numbers.sort(function(a, b) {
 			return a.localeCompare(b);
 		});;
+
 		for(let i = 0; i < numbers.length; i++) {
 			divMonths.innerHTML += '<span class="stats-text">' + names[numbers[i].split("/")[0]] + ", " + numbers[i].split("/")[1] + ": £" + months[numbers[i]].toFixed(2) + '</span>';
 		}
