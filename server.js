@@ -103,8 +103,28 @@ app.post("/editTransaction", async (req, res) => {
 	}
 });
 app.post("/deleteTransaction", async (req, res) => {
-	if(await checkDataDirectory() && await checkTransactionsFile()) {
-
+	let id = req.body.id;
+	try {
+		if(!empty(id)) {
+			if(await checkDataDirectory() && await checkTransactionsFile()) {
+				let json = await getFileContent(transactionsFile);
+				if(validJSON(json)) {
+					let transactions = JSON.parse(json);
+					delete transactions[id];
+					fs.writeFile(transactionsFile, JSON.stringify(transactions), function(error) {
+						if(error) {
+							console.log(error);
+						}
+						else {
+							res.send("done");
+						}
+					});
+				}
+			}
+		}
+	}
+	catch(e) {
+		console.log(e);
 	}
 });
 
@@ -177,6 +197,10 @@ function epoch() {
 	let date = new Date();
 	let time = Math.round(date.getTime() / 1000);
 	return time;
+}
+
+String.prototype.replaceAll = function(str1, str2, ignore) {
+	return this.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,"\\$&"),(ignore?"gi":"g")),(typeof(str2)=="string")?str2.replace(/\$/g,"$$$$"):str2);
 }
 
 function empty(string) {

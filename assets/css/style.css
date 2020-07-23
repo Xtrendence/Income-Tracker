@@ -207,7 +207,7 @@ button, input {
 	left:0;
 }
 
-.add-wrapper {
+.add-wrapper, .confirm-wrapper {
 	background:rgb(40,40,40);
 	padding:10px;
 	width:260px;
@@ -218,9 +218,23 @@ button, input {
 	left:calc(50% - (260px + 20px) / 2);
 	border-radius:10px;
 }
-.add-wrapper .edit-icon {
-	width:32px;
-	height:32px;
+.confirm-wrapper {
+	height:90px;
+	top:calc(50% - (90px + 20px) / 2);
+}
+.confirm-focus {
+	position:absolute;
+	opacity:0;
+}
+.confirm-text {
+	display:block;
+	width:100%;
+	text-align:center;
+	font-weight:bold;
+	background:rgb(20,20,20);
+	border-radius:10px;
+	line-height:40px;
+	margin-bottom:10px;
 }
 .add-wrapper .input-wrapper {
 	display:block;
@@ -238,12 +252,12 @@ button, input {
 	padding:0 10px 0 10px;
 	border-radius:10px;
 }
-.add-wrapper .action-wrapper {
+.add-wrapper .action-wrapper, .confirm-wrapper .action-wrapper {
 	display:block;
 	text-align:center;
 	font-size:0;
 }
-.add-wrapper .action-button {
+.add-wrapper .action-button, .confirm-wrapper .action-button {
 	background:rgb(20,20,20);
 	color:rgb(255,255,255);
 	font-weight:bold;
@@ -256,9 +270,9 @@ button, input {
 	display:inline-block;
 	margin:0 10px 0 0;
 }
-.add-wrapper .action-button:last-of-type {
+.add-wrapper .action-button:last-of-type, .confirm-wrapper .action-button:last-of-type {
 	margin-right:0;
 }
-#desktop .add-wrapper .action-button:hover {
+#desktop .add-wrapper .action-button:hover, #desktop .confirm-wrapper .action-button:hover {
 	background:rgb(0,125,255);
 }

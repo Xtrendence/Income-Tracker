@@ -1,4 +1,4 @@
-// TODO: Delete transaction, sort transactions by date, monthly earnings, mobile site, MTurk transfer adjustment.
+// TODO: Sort transactions by date, monthly earnings, mobile site, MTurk transfer adjustment.
 
 document.addEventListener("DOMContentLoaded", function() {
 	let body = document.getElementsByTagName("body")[0];
@@ -19,6 +19,10 @@ document.addEventListener("DOMContentLoaded", function() {
 	let buttonConfirmAdd = document.getElementsByClassName("add action-button confirm")[0];
 
 	let divAddWrapper = document.getElementsByClassName("add-wrapper")[0];
+	let divConfirmWrapper = document.getElementsByClassName("confirm-wrapper")[0];
+
+	let buttonCancelDelete = document.getElementsByClassName("delete action-button cancel")[0];
+	let buttonConfirmDelete = document.getElementsByClassName("delete action-button confirm")[0];
 
 	let divChartWrapper = document.getElementsByClassName("chart-wrapper")[0];
 
@@ -89,8 +93,29 @@ document.addEventListener("DOMContentLoaded", function() {
 			buttonConfirmAdd.click();
 		}
 	});
+
+	buttonCancelDelete.addEventListener("click", function() {
+		hideConfirm();
+	});
+	buttonConfirmDelete.addEventListener("click", function() {
+		let action = divConfirmWrapper.getAttribute("data-action");
+		let id = divConfirmWrapper.getAttribute("data-id");
+		switch(action) {
+			case "delete":
+				deleteTransaction(id);
+				break;
+		}
+		hideConfirm();
+	});
+	divConfirmWrapper.addEventListener("keydown", function(e) {
+		if(e.key.toLowerCase() === "enter") {
+			buttonConfirmDelete.click();
+		}
+	});
+
 	divOverlay.addEventListener("click", function() {
 		hideAdd();
+		hideConfirm();
 	});
 
 	function showAdd(action, args) {
@@ -115,6 +140,19 @@ document.addEventListener("DOMContentLoaded", function() {
 		divAddWrapper.classList.add("hidden");
 		divAddWrapper.setAttribute("data-action", "add");
 		divAddWrapper.setAttribute("data-id", "");
+	}
+
+	function showConfirm(action, args) {
+		divOverlay.classList.remove("hidden");
+		divConfirmWrapper.classList.remove("hidden");
+		divConfirmWrapper.setAttribute("data-action", action);
+		document.getElementsByClassName("confirm-focus")[0].focus();
+	}
+	function hideConfirm() {
+		divOverlay.classList.add("hidden");
+		divConfirmWrapper.classList.add("hidden");
+		divConfirmWrapper.setAttribute("data-action", "delete");
+		divConfirmWrapper.setAttribute("data-id", "");
 	}
 
 	function getMTurkStats() {
@@ -203,6 +241,10 @@ document.addEventListener("DOMContentLoaded", function() {
 						div.getElementsByClassName("income action-button edit")[0].addEventListener("click", function() {
 							showAdd("edit", { source:transactions[ids[i]].source, amount:transactions[ids[i]].amount, date:transactions[ids[i]].date });
 							divAddWrapper.setAttribute("data-id", ids[i]);
+						});
+						div.getElementsByClassName("income action-button delete")[0].addEventListener("click", function() {
+							showConfirm("delete");
+							divConfirmWrapper.setAttribute("data-id", ids[i]);
 						});
 
 						divIncomeList.appendChild(div);
