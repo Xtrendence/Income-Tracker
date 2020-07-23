@@ -160,12 +160,18 @@ button, input {
 	display:inline-block;
 	width:170px;
 	line-height:40px;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap;
 }
 .income-amount {
 	font-size:18px;
 	display:inline-block;
 	width:120px;
 	line-height:40px;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap;
 }
 .income-amount:before {
 	font-size:18px;
@@ -179,6 +185,9 @@ button, input {
 	width:calc(100% - 170px - 120px);
 	text-align:right;
 	line-height:40px;
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap;
 }
 .income-transaction-actions {
 	text-align:center;

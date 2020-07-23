@@ -17,3 +17,37 @@
 		height:calc(100% - 80px - 80px);
 	}
 }
+@media screen and (max-width:470px) {
+	.income-source {
+		width:150px;
+	}
+	.income-amount {
+		width:120px;
+	}
+	.income-date {
+		width:calc(100% - 150px - 120px);
+	}
+}
+@media screen and (max-width:450px) {
+	.income-source {
+		width:130px;
+	}
+	.income-amount {
+		width:120px;
+	}
+	.income-date {
+		width:calc(100% - 130px - 120px);
+	}
+}
+@media screen and (max-width:430px) {
+	.income-source {
+		width:130px;
+	}
+	.income-amount {
+		text-align:right;
+		width:calc(100% - 150px);
+	}
+	.income-date {
+		display:none;
+	}
+}
