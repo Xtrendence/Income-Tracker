@@ -222,7 +222,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				let json = xhr.responseText;
 				if(validJSON(json)) {
 					divIncomeList.innerHTML = "";
-					let transactions = JSON.parse(json);
+					let transactions = sortTransactions(JSON.parse(json));
 					let ids = Object.keys(transactions).reverse();
 					let total = 0;
 					for(let i = 0; i < ids.length; i++) {
@@ -260,6 +260,13 @@ document.addEventListener("DOMContentLoaded", function() {
 		});
 		xhr.open("GET", "/transactions", true);
 		xhr.send();
+	}
+	function sortTransactions(transactions) {
+		return Object.keys(transactions).map(function(key) {
+			return transactions[key];
+		}).sort(function(a, b) {
+			return a.date.localeCompare(b.date);
+		});
 	}
 	function addTransaction(source, amount, date) {
 		let xhr = new XMLHttpRequest();
