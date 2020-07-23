@@ -1,4 +1,4 @@
-// TODO: Sort transactions by date, monthly earnings, mobile site, MTurk transfer adjustment.
+// TODO: Sort transactions by date, mobile site, MTurk transfer adjustment.
 
 document.addEventListener("DOMContentLoaded", function() {
 	let body = document.getElementsByTagName("body")[0];
