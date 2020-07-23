@@ -185,12 +185,12 @@ button, input {
 	display:block;
 	margin-bottom:10px;
 }
-.stats-wrapper .stats-total {
+.stats-wrapper .stats-total, .stats-wrapper .stats-text {
 	font-size:16px;
 	display:block;
 	margin-bottom:10px;
 }
-.stats-wrapper .stats-total:last-of-type {
+.stats-wrapper .stats-total:last-of-type, .stats-wrapper .stats-text:last-of-type {
 	margin-bottom:0;
 }
 .stats-wrapper .stats-months {
