@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	let inputSource = document.getElementsByClassName("add-input source")[0];
 	let inputAmount = document.getElementsByClassName("add-input amount")[0];
 	let inputDate = document.getElementsByClassName("add-input date")[0];
+	let buttonCalendar = document.getElementsByClassName("calendar-icon")[0];
 	let buttonCancelAdd = document.getElementsByClassName("add action-button cancel")[0];
 	let buttonConfirmAdd = document.getElementsByClassName("add action-button confirm")[0];
 
@@ -89,6 +90,13 @@ document.addEventListener("DOMContentLoaded", function() {
 		else {
 			hideAdd();
 		}
+	});
+	buttonCalendar.addEventListener("click", function() {
+		let date = new Date();
+		let day = ("0" + (date.getDate())).toString().slice(-2);
+		let month = ("0" + (date.getMonth() + 1)).toString().slice(-2);
+		let year = date.getFullYear();
+		inputDate.value = day + "/" + month + "/" + year;
 	});
 	buttonCancelAdd.addEventListener("click", function() {
 		hideAdd();
@@ -353,7 +361,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		let transactions = parseTransactionList();
 
 		let currentDate = new Date();
-		let currentMonth = "0" + (currentDate.getMonth() + 1).toString().slice(-2);
+		let currentMonth = ("0" + (currentDate.getMonth() + 1)).toString().slice(-2);
 		let currentYear = currentDate.getFullYear();
 
 		let dates = {};
