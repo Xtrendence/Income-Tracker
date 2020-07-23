@@ -24,19 +24,48 @@ app.get("/", (req, res) => {
 	res.render("index");
 });
 
-app.get("/install", async(req, res) => {
+app.get("/install", (req, res) => {
 	let svc = new Service({
-		name:"Income-Tracker",
+		name:"Income Tracker",
 		description:"Income Tracker",
 		script:scriptPath
 	});
 
 	svc.on("install", function() {
-		res.send("Service Installed");
+		res.write("Service Installed");
+		svc.start();
+	});
+
+	svc.on("alreadyinstalled", function() {
+		res.write("Service Already Installed");
+		svc.start();
+	});
+
+	svc.on("error", function(e) {
+		res.write(e);
 		svc.start();
 	});
 
 	svc.install();
+});
+app.get("/uninstall", (req, res) => {
+	let svc = new Service({
+		name:"Income Tracker",
+		description:"Income Tracker",
+		script:scriptPath
+	});
+
+	svc.on("uninstall", function() {
+		res.write("Service Uninstalled");
+		svc.stop();
+	});
+
+	svc.on("error", function(e) {
+		res.write(e);
+		svc.start();
+	});
+
+	svc.uninstall();
 });
 
 app.get("/mturk", async (req, res) => {
