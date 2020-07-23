@@ -168,9 +168,6 @@ button, input {
 	height:100%;
 	background:rgb(20,20,20);
 }
-.stats-wrapper .chart-wrapper {
-
-}
 .stats-wrapper .stats-section {
 	display:block;
 	background:rgb(40,40,40);
@@ -192,9 +189,6 @@ button, input {
 }
 .stats-wrapper .stats-total:last-of-type, .stats-wrapper .stats-text:last-of-type {
 	margin-bottom:0;
-}
-.stats-wrapper .stats-months {
-
 }
 
 .overlay {

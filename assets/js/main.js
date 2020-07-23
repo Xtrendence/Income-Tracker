@@ -1,4 +1,7 @@
-// TODO: Sort transactions by date, mobile site, MTurk transfer adjustment.
+// TODO: Mobile site
+
+// User Variables
+let mturkAdjustment = 1 - 0.37;
 
 document.addEventListener("DOMContentLoaded", function() {
 	let body = document.getElementsByTagName("body")[0];
@@ -203,7 +206,7 @@ document.addEventListener("DOMContentLoaded", function() {
 				if(validJSON(xhr.responseText)) {
 					let result = JSON.parse(xhr.responseText);
 					let gbp = result.rates.GBP;
-					total = total * gbp;
+					total = (total * gbp) * mturkAdjustment;
 					spanTotalEarningsMTurk.textContent = "MTurk: £" + total.toFixed(2);
 					spanTotalEarningsMTurk.setAttribute("data-gbp", gbp);
 					calculateTotal();
@@ -358,10 +361,10 @@ document.addEventListener("DOMContentLoaded", function() {
 				}
 
 				if(monthYear in months) {
-					months[monthYear] = parseFloat(months[monthYear]) + parseFloat(statsMTurk[time]) * gbp;
+					months[monthYear] = parseFloat(months[monthYear]) + ((parseFloat(statsMTurk[time]) * gbp) * mturkAdjustment);
 				}
 				else {
-					Object.assign(months, { [monthYear]:parseFloat(statsMTurk[time]) * gbp });
+					Object.assign(months, { [monthYear]:(parseFloat(statsMTurk[time]) * gbp) * mturkAdjustment });
 				}
 			}
 
