@@ -38,6 +38,9 @@
 	.income-date {
 		width:calc(100% - 130px - 120px);
 	}
+	.section-note.mturk-adjustment {
+		display:none;
+	}
 }
 @media screen and (max-width:430px) {
 	.income-source {

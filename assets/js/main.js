@@ -231,6 +231,7 @@ document.addEventListener("DOMContentLoaded", function() {
 					spanTotalEarningsMTurk.textContent = "MTurk: £" + total.toFixed(2);
 					spanTotalEarningsMTurk.setAttribute("data-gbp", gbp);
 					calculateTotal();
+					document.getElementsByClassName("section-note mturk-adjustment")[0].textContent =  "MTurk › Purse.IO (-" + (1 - mturkAdjustment) * 100 + "%)"
 				}
 			}
 		});
