@@ -48,6 +48,48 @@ button, input {
 	background:rgb(30,30,30);
 }
 
+.switcher-wrapper {
+	position:relative;
+	margin-top:20px;
+	text-align:center;
+	font-size:0;
+	display:none;
+	width:100%;
+}
+.switcher-wrapper.income {
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:80px;
+	background:rgb(60,60,60);
+	margin:0;
+}
+.stats-switcher, .income-switcher {
+	background:rgb(40,40,40);
+	color:rgb(255,255,255);
+	font-weight:bold;
+	font-size:16px;
+	height:40px;
+	border-radius:10px;
+	cursor:pointer;
+	padding:0 20px 0 20px;
+	display:inline-block;
+	margin:0 10px 0 0;
+}
+.income-switcher {
+	margin-top:20px;
+}
+.income-switcher:last-of-type {
+	margin-right:14px;
+}
+#desktop .stats-switcher:hover, #desktop .income-switcher:hover, .stats-switcher.active, .income-switcher.active {
+	background:rgb(0,125,255);
+}
+.stats-switcher.active, .income-switcher.active {
+	cursor:default;
+}
+
 .income-wrapper {
 	position:absolute;
 	top:0;
@@ -167,6 +209,10 @@ button, input {
 	width:calc(100% - 480px);
 	height:100%;
 	background:rgb(20,20,20);
+	overflow-x:hidden;
+	overflow-y:scroll;
+	scroll-behavior:smooth;
+	-webkit-overflow-scrolling:touch;
 }
 .stats-wrapper .stats-section {
 	display:block;
@@ -175,6 +221,9 @@ button, input {
 	padding:10px;
 	width:calc(100% - 40px - 20px);
 	border-radius:10px;
+}
+.stats-wrapper .stats-section:last-of-type {
+	margin-bottom:20px;
 }
 .stats-wrapper .section-title {
 	font-size:18px;

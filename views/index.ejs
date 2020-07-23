@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <link rel="stylesheet" href="./assets/css/style.css">
+        <link rel="stylesheet" href="./assets/css/resize.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <script src="./assets/js/chart.js"></script>
         <script src="./assets/js/main.js"></script>
@@ -18,6 +19,10 @@
     </head>
     <body>
         <div class="income-wrapper noselect">
+            <div class="switcher-wrapper income">
+                <button class="income-switcher income active">Income</button>
+                <button class="income-switcher stats">Stats</button>
+            </div>
             <div class="income-list"></div>
             <div class="footer">
                 <input class="file-input hidden" type="file">
@@ -26,6 +31,10 @@
             </div>
         </div>
         <div class="stats-wrapper noselect">
+            <div class="switcher-wrapper stats">
+                <button class="stats-switcher income">Income</button>
+                <button class="stats-switcher stats active">Stats</button>
+            </div>
             <div class="stats-section">
                 <span class="section-title">Total Earnings</span>
                 <span class="stats-total mturk">MTurk: £0</span>

@@ -1,10 +1,13 @@
-// TODO: Mobile site
-
 // User Variables
 let mturkAdjustment = 1 - 0.37;
 
 document.addEventListener("DOMContentLoaded", function() {
 	let body = document.getElementsByTagName("body")[0];
+
+	let buttonIncome = document.getElementsByClassName("stats-switcher income")[0];
+	let buttonStats = document.getElementsByClassName("income-switcher stats")[0];
+	let divIncomeWrapper = document.getElementsByClassName("income-wrapper")[0];
+	let divStatsWrapper = document.getElementsByClassName("stats-wrapper")[0];
 
 	let divOverlay = document.getElementsByClassName("overlay")[0];
 
@@ -36,6 +39,22 @@ document.addEventListener("DOMContentLoaded", function() {
 	let spanTotalEarningsAdded = document.getElementsByClassName("stats-total added")[0];
 
 	getTransactions();
+
+	window.addEventListener("resize", function() {
+		if(window.innerWidth >= 950) {
+			divIncomeWrapper.removeAttribute("style");
+			divStatsWrapper.removeAttribute("style");
+		}
+	});
+
+	buttonIncome.addEventListener("click", function() {
+		divIncomeWrapper.style.display = "block";
+		divStatsWrapper.style.display = "none";
+	});
+	buttonStats.addEventListener("click", function() {
+		divStatsWrapper.style.display = "block";
+		divIncomeWrapper.style.display = "none";
+	});
 
 	buttonUpload.addEventListener("click", function() {
 		inputFile.click();
@@ -151,7 +170,9 @@ document.addEventListener("DOMContentLoaded", function() {
 		divOverlay.classList.remove("hidden");
 		divConfirmWrapper.classList.remove("hidden");
 		divConfirmWrapper.setAttribute("data-action", action);
-		document.getElementsByClassName("confirm-focus")[0].focus();
+		if(body.id === "desktop") {
+			document.getElementsByClassName("confirm-focus")[0].focus();
+		}
 	}
 	function hideConfirm() {
 		divOverlay.classList.add("hidden");

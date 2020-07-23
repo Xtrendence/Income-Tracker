@@ -1,0 +1,19 @@
+@media screen and (max-width:950px) {
+	.switcher-wrapper {
+		display:block;
+	}
+	.income-wrapper, .stats-wrapper {
+		position:absolute;
+		top:0;
+		left:0;
+		width:100%;
+		display:block;
+	}
+	.income-wrapper {
+		display:none;
+	}
+	.income-list {
+		top:80px;
+		height:calc(100% - 80px - 80px);
+	}
+}
