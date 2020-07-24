@@ -1,3 +1,3 @@
 # Income Tracker
 
-A simple income tracker made with Node.js.
+![Income Tracker](https://i.imgur.com/6bb9DQf.png)
