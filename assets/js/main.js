@@ -480,7 +480,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	function calculateTotal() {
 		let added = parseFloat(spanTotalEarningsMTurk.textContent.replace("MTurk: £", "")) + parseFloat(spanTotalEarningsOther.textContent.replace("Other: £", ""));
 		if(added.toString().toLowerCase() !== "nan") {
-			spanTotalEarningsAdded.textContent = "Total: £" + added;
+			spanTotalEarningsAdded.textContent = "Total: £" + added.toFixed(2);
 		}
 		parseEarnings();
 	}
