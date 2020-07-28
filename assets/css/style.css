@@ -210,6 +210,9 @@ button, input {
 .income-transaction .action-button:last-of-type {
 	margin-right:0;
 }
+#desktop .income-transaction .action-button.delete:hover {
+	background:rgb(230,50,50);
+}
 
 .stats-wrapper {
 	position:absolute;
