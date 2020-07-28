@@ -262,7 +262,7 @@ document.addEventListener("DOMContentLoaded", function() {
 					for(let i = 0; i < ids.length; i++) {
 						let div = document.createElement("div");
 						div.classList.add("income-transaction");
-						div.id = ids[i];
+						div.id = transactions[ids[i]].id;
 						div.innerHTML = '<div class="income-transaction-details"><span class="income-source">' + transactions[ids[i]].source + '</span><span class="income-amount">' + transactions[ids[i]].amount + '</span><span class="income-date">' + transactions[ids[i]].date + '</span></div><div class="income-transaction-actions hidden"><button class="income action-button back">Back</button><button class="income action-button edit">Edit</button><button class="income action-button delete">Delete</button></div>';
 
 						div.addEventListener("click", function() {
@@ -277,11 +277,11 @@ document.addEventListener("DOMContentLoaded", function() {
 						});
 						div.getElementsByClassName("income action-button edit")[0].addEventListener("click", function() {
 							showAdd("edit", { source:transactions[ids[i]].source, amount:transactions[ids[i]].amount, date:transactions[ids[i]].date });
-							divAddWrapper.setAttribute("data-id", ids[i]);
+							divAddWrapper.setAttribute("data-id", transactions[ids[i]].id);
 						});
 						div.getElementsByClassName("income action-button delete")[0].addEventListener("click", function() {
 							showConfirm("delete");
-							divConfirmWrapper.setAttribute("data-id", ids[i]);
+							divConfirmWrapper.setAttribute("data-id", transactions[ids[i]].id);
 						});
 
 						divIncomeList.appendChild(div);
@@ -297,6 +297,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	}
 	function sortTransactions(transactions) {
 		return Object.keys(transactions).map(function(key) {
+			Object.assign(transactions[key], { id:key });
 			return transactions[key];
 		}).sort(function(a, b) {
 			return a.date.localeCompare(b.date);
