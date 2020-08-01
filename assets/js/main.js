@@ -477,7 +477,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		let numbers = Object.keys(months);
 		numbers.sort(function(a, b) {
 			return a.localeCompare(b);
-		});;
+		}).reverse();
 
 		for(let i = 0; i < numbers.length; i++) {
 			divMonths.innerHTML += '<span class="stats-text">' + names[numbers[i].split("/")[0]] + ", " + numbers[i].split("/")[1] + ": £" + months[numbers[i]].toFixed(2) + '</span>';
