@@ -300,7 +300,9 @@ document.addEventListener("DOMContentLoaded", function() {
 			Object.assign(transactions[key], { id:key });
 			return transactions[key];
 		}).sort(function(a, b) {
-			return a.date.localeCompare(b.date);
+			let a_time = Math.round(new Date(a.date).getTime() / 1000);
+			let b_time = Math.round(new Date(b.date).getTime() / 1000);
+			return a_time > b_time;
 		});
 	}
 	function addTransaction(source, amount, date) {
@@ -437,7 +439,11 @@ document.addEventListener("DOMContentLoaded", function() {
 				earnings.push(parseFloat(dates[days[i]]).toFixed(2));
 			}
 
-			spanAverage.textContent = "Daily Average: £" + (monthlyTotal / days.length).toFixed(2);
+			let dailyAverage = (monthlyTotal / days.length).toFixed(2);
+			if(dailyAverage.toLowerCase() === "nan") {
+				dailyAverage = "0";
+			}
+			spanAverage.textContent = "Daily Average: £" + dailyAverage;
 
 			generateChart(days, earnings);
 			generateMonthlyEarnings(months);
